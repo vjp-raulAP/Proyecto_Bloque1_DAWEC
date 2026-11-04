@@ -408,13 +408,22 @@ function crearTarjetaRepuesto(categoria, listaRepuestos) {
         // Creamos un separador.
         const separador = document.createElement("hr");
 
-        // Creamos un párrafo con los datos del repuesto.
         const datos = document.createElement("p");
         datos.textContent =
             `${repuesto.nombre} · ${repuesto.marca} · ${repuesto.precio} €`;
 
-        // Añadimos los datos a la tarjeta.
-        tarjeta.append(separador, datos);
+        // Creamos el párrafo de la fecha.
+        const fecha = document.createElement("p");
+        fecha.classList.add("fecha");
+        fecha.textContent = fechaLegible(repuesto.fecha);
+
+        // Comprobamos si el repuesto es reciente.
+        if (diasDesde(repuesto.fecha) <= DIAS_RECIENTE) {
+            tarjeta.classList.add("reciente");
+        }
+
+        // Añadimos los elementos a la tarjeta.
+        tarjeta.append(separador, datos, fecha);
     }
 
     return tarjeta;
@@ -479,7 +488,9 @@ function ordenarRepuestos(lista, criterio) {
     if (criterio === "precio") {
         copia.sort((a, b) => b.precio - a.precio);
     }
-
+    if (criterio === "fecha") {
+    copia.sort((a, b) => fechaCorrecta(b.fecha) - fechaCorrecta(a.fecha));
+    }   
     return copia;
 }
 
@@ -505,6 +516,7 @@ function actualizarListado() {
 const buscadorReto2 = document.querySelector("#buscador");
 const botonNombreReto2 = document.querySelector("#ordenNombre");
 const botonPrecioReto2 = document.querySelector("#ordenPrecio");
+const botonFecha = document.querySelector("#ordenFecha");
 
 // Buscamos mientras escribimos.
 buscadorReto2.addEventListener("input", function () {
@@ -512,30 +524,92 @@ buscadorReto2.addEventListener("input", function () {
     actualizarListado();
 });
 
-// Ordenamos por nombre.
-botonNombreReto2.addEventListener("click", function () {
-    criterioOrdenacion = "nombre";
+// Función para elegir el orden.
+function elegirOrden(nuevo) {
+    criterioOrdenacion = nuevo;
+    guardarCookie("orden", criterioOrdenacion, 30);
     actualizarListado();
-});
+}
+
+// Ordenamos por nombre.
+botonNombreReto2.addEventListener("click", () => elegirOrden("nombre"));
 
 // Ordenamos por precio.
-botonPrecioReto2.addEventListener("click", function () {
-    criterioOrdenacion = "precio";
-    actualizarListado();
-});
+botonPrecioReto2.addEventListener("click", () => elegirOrden("precio"));
 
-// Mostramos todos los repuestos al iniciar.
-actualizarListado();
+botonFecha.addEventListener("click", () => elegirOrden("fecha"));
 
-// Muestra un resumen de los repuestos que aparecen
+// Muestra un resumen de los repuestos que aparecen.
 function pintarResumen(mostrados) {
-
     const resumen = document.querySelector("#resumen");
 
     if (mostrados > 0) {
-        resumen.textContent = `Mostrando ${mostrados} de ${repuestos.length} recetas`;
+        resumen.textContent = `Mostrando ${mostrados} de ${repuestos.length} repuestos`;
     } else {
-        resumen.textContent = "No hay recetas que contengan «xyz»";
+        resumen.textContent = "No hay repuestos que coincidan con la búsqueda";
     }
 }
- 
+
+// Función para guardar una cookie.
+function guardarCookie(nombre, valor, dias) {
+    const segundos = dias * 24 * 60 * 60;
+    const texto = encodeURIComponent(valor);
+    document.cookie = `${nombre}=${texto}; max-age=${segundos}; path=/`;
+}
+
+// Función para leer una cookie.
+function leerCookie(nombre) {
+    const partes = document.cookie.split("; ");
+
+    for (const parte of partes) {
+        const [clave, valor] = parte.split("=");
+
+        if (clave === nombre) {
+            return decodeURIComponent(valor);
+        }
+    }
+
+    return null;
+}
+
+function elegirOrden(nuevo) {
+    criterioOrdenacion = nuevo;
+    guardarCookie("orden", criterioOrdenacion, 30);
+    actualizarListado();
+}
+
+// A3. Recuperamos el último orden guardado.
+criterioOrdenacion = leerCookie("orden") || "ninguno";
+
+// Actualizamos el listado.
+
+
+
+
+// B2. Funciones para las fechas.
+
+const DIAS_RECIENTE = 30;
+
+// Convertimos la fecha en una fecha correcta.
+function fechaCorrecta(texto) {
+    return new Date(texto + "T00:00:00");
+}
+
+// Convertimos la fecha a formato legible.
+function fechaLegible(texto) {
+    return fechaCorrecta(texto).toLocaleDateString("es-ES", {
+        day: "numeric",month: "long",
+        year: "numeric"
+    });
+}
+
+// Calculamos los días que han pasado.
+function diasDesde(texto) {
+    const MS_DIA = 24 * 60 * 60 * 1000;
+    const ahora = new Date();
+    const fecha = fechaCorrecta(texto);
+
+    return Math.floor((ahora - fecha) / MS_DIA);
+}
+
+actualizarListado();
