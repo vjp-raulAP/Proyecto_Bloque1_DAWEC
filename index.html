@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -11,15 +10,20 @@
 
     <!-- JavaScript -->
     <script src="./js/app.js" defer></script>
+    
 </head>
 <body>
 
-    <h1>Catálogo de repuestos de coche</h1>
+     <header>
+        <h1 id="titulo">Catálogo de repuestos de coche</h1>
 
-    <p>
-        Aplicación para gestionar un catálogo de repuestos de coche.
-    </p>
+        <p>
+            Aplicación para gestionar un catálogo de repuestos de coche.
+        </p>
 
+        <p id="resumen"></p>
+        <p id="estadisticas"></p>
+    </header>
     <!-- Buscador y botones para ordenar -->
     <section class="controles">
 
@@ -32,22 +36,51 @@
         <button id="ordenPrecio" type="button">
             Ordenar por precio
         </button>
-        <button id="ordenFecha">Ordenar por fecha</button>
+
+        <button id="ordenFecha" type="button">
+            Ordenar por fecha
+        </button>
 
     </section>
+    <hr>
+    <!-- Formulario para añadir repuestos -->
+    <section id="formularioRepuesto">
 
-    <!-- Resumen del catálogo -->
-    <section>
-        <h2>Resumen</h2>
-        <p id="resumen"></p>
-        <p id="estadisticas"></p>
-    </section>
+        <h2>Añadir nuevo repuesto</h2>
 
-    <!-- Aquí aparecerán las tarjetas -->
-    <section>
-        <h2>Listado de repuestos</h2>
-        <div id="listado"></div>
+        <form id="formulario">
+
+            <label for="nuevoNombre">Nombre:</label>
+            <input type="text" id="nuevoNombre" placeholder="Ej. Espejo retrovisor" required>
+            <span id="errorNombre"></span>
+
+            <label for="nuevaCategoria">Categoría:</label>
+            <input type="text" id="nuevaCategoria" required>
+
+            <label for="nuevaMarca">Marca:</label>
+            <input type="text" id="nuevaMarca" required>
+
+            <label for="nuevoModelo">Modelo:</label>
+            <input type="text" id="nuevoModelo" required>
+
+            <label for="nuevoPrecio">Precio:</label>
+            <input type="number" id="nuevoPrecio" step="0.01" min="0.01" required>
+
+            <label for="nuevaFecha">Fecha:</label>
+            <input type="date" id="nuevaFecha" required>
+
+            <button type="submit">Añadir repuesto</button>
+
+        </form>
+
     </section>
+    <hr>
+    
+        <!-- Listado de repuestos -->
+        <section>
+            <h2>Listado de repuestos</h2>
+            <div id="listado"></div>
+        </section>
 
 </body>
 </html>

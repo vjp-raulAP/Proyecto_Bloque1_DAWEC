@@ -387,89 +387,76 @@ estadisticas([]);
 
 
 
- // SPRINT 1. PINTAR COLECCION
+ // ==========================================
+// SPRINT 1 - SESIÓN 10 
+// RETO 2: TU COLECCIÓN EN LA PÁGINA
+// ==========================================
+// Días que consideramos para marcar un repuesto como reciente.
+const DIAS_RECIENTE = 30;
+// Seleccionamos el contenedor donde aparecerán las tarjetas.
 const listado = document.querySelector("#listado");
- // Función para crear una tarjeta de una categoría.
-function crearTarjetaRepuesto(categoria, listaRepuestos) {
+ // Función para crear una tarjeta de un repuesto.
+function crearTarjetaRepuesto(repuesto) {
 
     // Creamos la tarjeta.
     const tarjeta = document.createElement("article");
     tarjeta.classList.add("tarjeta");
 
-    // Creamos el título con el nombre de la categoría.
-    const titulo = document.createElement("h3");
-    titulo.textContent = categoria;
-
-    tarjeta.append(titulo);
-
-    // Recorremos los repuestos de esa categoría.
-    for (const repuesto of listaRepuestos) {
-
+        // Creamos el título con el nombre del repuesto.
+        const titulo = document.createElement("h3");
+        titulo.textContent = repuesto.nombre;
         // Creamos un separador.
         const separador = document.createElement("hr");
-
+        // Creamos los datos del repuesto.
+        
         const datos = document.createElement("p");
-        datos.textContent =
-            `${repuesto.nombre} · ${repuesto.marca} · ${repuesto.precio} €`;
+      
+        
+        datos.textContent =`Categoría: ${repuesto.categoria}
+         Marca: ${repuesto.marca}
+         Modelo: ${repuesto.modelo}`;
 
-        // Creamos el párrafo de la fecha.
-        const fecha = document.createElement("p");
-        fecha.classList.add("fecha");
-        fecha.textContent = fechaLegible(repuesto.fecha);
+        // Creamos el precio.
+        const precio = document.createElement("p");
+        precio.textContent = `Precio = ${repuesto.precio} €`;
 
-        // Comprobamos si el repuesto es reciente.
-        if (diasDesde(repuesto.fecha) <= DIAS_RECIENTE) {
-            tarjeta.classList.add("reciente");
-        }
+    // Creamos la fecha.
+    const fecha = document.createElement("p");
+    fecha.classList.add("fecha");
+    fecha.textContent = fechaLegible(repuesto.fecha);
 
-        // Añadimos los elementos a la tarjeta.
-        tarjeta.append(separador, datos, fecha);
+    // Comprobamos si el repuesto es reciente.
+    if (diasDesde(repuesto.fecha) <= DIAS_RECIENTE) {
+        tarjeta.classList.add("reciente");
     }
+
+    // Añadimos los elementos a la tarjeta.
+    tarjeta.append(titulo,separador, datos, precio, fecha);
 
     return tarjeta;
 }
 
 
-// Función para mostrar los repuestos agrupados por categoría.
+// Función para mostrar los repuestos.
 function mostrarRepuestos(lista) {
 
     // Vaciamos el contenedor de tarjetas.
     listado.replaceChildren();
 
-    // Creamos un objeto para guardar las categorías.
-    const categorias = {};
-
-    // Agrupamos los repuestos por categoría.
+    // Recorremos todos los repuestos.
     for (const repuesto of lista) {
 
-        // Si la categoría no existe, creamos una lista vacía.
-        if (!categorias[repuesto.categoria]) {
-            categorias[repuesto.categoria] = [];
-        }
+        // Creamos una tarjeta para cada repuesto.
+        const tarjeta = crearTarjetaRepuesto(repuesto);
 
-        // Añadimos el repuesto a su categoría.
-        categorias[repuesto.categoria].push(repuesto);
-    }
-
-    // Recorremos las categorías.
-    for (const categoria in categorias) {
-
-        // Creamos una tarjeta con todos los repuestos de esa categoría.
-        const tarjeta = crearTarjetaRepuesto(categoria,categorias[categoria]);
-
-        // Añadimos la tarjeta al HTML.
+        // Añadimos la tarjeta al listado.
         listado.append(tarjeta);
     }
 
     // Mostramos el número total de repuestos.
     document.querySelector("#resumen").textContent =
         "Total de repuestos: " + lista.length;
-
-    // Mostramos las estadísticas.
-    document.querySelector("#estadisticas").textContent =
-        "Categorías: " + Object.keys(categorias).length;
 }
-
 // RETO 2. BUSCADOR Y ORDENACIÓN
 
 let textoBuscado = "";
@@ -572,11 +559,7 @@ function leerCookie(nombre) {
     return null;
 }
 
-function elegirOrden(nuevo) {
-    criterioOrdenacion = nuevo;
-    guardarCookie("orden", criterioOrdenacion, 30);
-    actualizarListado();
-}
+
 
 // A3. Recuperamos el último orden guardado.
 criterioOrdenacion = leerCookie("orden") || "ninguno";
@@ -588,7 +571,7 @@ criterioOrdenacion = leerCookie("orden") || "ninguno";
 
 // B2. Funciones para las fechas.
 
-const DIAS_RECIENTE = 30;
+const DIAS_MES = 30;
 
 // Convertimos la fecha en una fecha correcta.
 function fechaCorrecta(texto) {
@@ -613,3 +596,70 @@ function diasDesde(texto) {
 }
 
 actualizarListado();
+
+// VALIDACIÓN Y FORMULARIO PARA AÑADIR REPUESTOS
+
+// Expresión regular para validar el nombre.
+const patronNombre = /^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ0-9 ]{3,50}$/;
+
+// Recuperamos los elementos del formulario.
+const formulario = document.querySelector("#formulario");
+const nombre = document.querySelector("#nuevoNombre");
+const categoria = document.querySelector("#nuevaCategoria");
+const marca = document.querySelector("#nuevaMarca");
+const modelo = document.querySelector("#nuevoModelo");
+const precio = document.querySelector("#nuevoPrecio");
+const fecha = document.querySelector("#nuevaFecha");
+
+const resultadoNombre = document.querySelector("#errorNombre");
+
+// Función para validar el nombre.
+function validar(campo, patron, resultado) {
+
+    if (patron.test(campo.value.trim())) {
+        resultado.textContent = "Válido";
+        resultado.style.color = "green";
+        return true;
+    } else {
+        resultado.textContent = "No válido";
+        resultado.style.color = "red";
+        return false;
+    }
+}
+
+// Validamos mientras escribimos.
+nombre.addEventListener("input", function() {
+    validar(nombre, patronNombre, resultadoNombre);
+});
+
+// Comprobamos el formulario antes de añadir.
+formulario.addEventListener("submit", function(event) {
+
+    event.preventDefault();
+
+    if (!validar(nombre, patronNombre, resultadoNombre)) {
+        return;
+    }
+
+    // Creamos el nuevo repuesto.
+    const nuevoRepuesto = {
+        nombre: nombre.value.trim(),
+        categoria: categoria.value,
+        marca: marca.value,
+        modelo: modelo.value,
+        precio: Number(precio.value),
+        fecha: fecha.value
+    };
+
+    // Añadimos el repuesto al catálogo.
+    anadir(repuestos, nuevoRepuesto);
+
+    // Actualizamos el listado.
+    actualizarListado();
+
+    // Limpiamos el formulario.
+    formulario.reset();
+
+    // Mostramos un mensaje de confirmación.
+    alert("¡Repuesto añadido correctamente!");
+});
