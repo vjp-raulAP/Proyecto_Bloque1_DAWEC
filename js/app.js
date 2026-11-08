@@ -346,8 +346,7 @@ function estadisticas(lista) {
 
     // Comprobamos si la lista está vacía.
     if (lista.length === 0) {
-        console.warn("No hay repuestos para calcular las estadísticas.");
-        return;
+        return null;
     }
 
     // Inicializamos la suma y el repuesto más caro.
@@ -369,12 +368,14 @@ function estadisticas(lista) {
     // Calculamos el precio medio.
     const media = suma / lista.length;
 
-    // Mostramos los resultados.
-    console.log("--- Estadísticas de los repuestos ---");
-    console.log(`Precio total: ${suma.toFixed(2)} €`);  //suma el total con dos decimales.
-    console.log(`Precio medio: ${media.toFixed(1)} €`); //suma el toal con un decimal
-    console.log(`Repuesto más caro: ${maximo.nombre} (${maximo.precio} €)`);
+    // Devolvemos un objeto con las estadísticas.
+    return {
+        total: suma,
+        media: media,
+        maximo: maximo
+    };
 }
+
 
 // Probamos llamada a la función con el catálogo.
 estadisticas(repuestos);
@@ -383,7 +384,24 @@ estadisticas(repuestos);
 console.log("-----Prueba con lista vacia----")
 estadisticas([]);
 
+// Función para mostrar las estadísticas en la página.
+function pintarEstadisticas(lista) {
 
+    // Obtenemos las estadísticas.
+    const resultado = estadisticas(lista);
+
+    // Buscamos el elemento donde mostraremos los resultados.
+    const elemento = document.querySelector("#estadisticas");
+
+    // Comprobamos si hay repuestos.
+    if (resultado === null) {
+        elemento.textContent = "No hay repuestos para mostrar estadísticas.";
+        return;
+    }
+
+    // Mostramos las estadísticas en una sola línea.
+    elemento.textContent = `Precio total: ${resultado.total.toFixed(2)} € | Precio medio: ${resultado.media.toFixed(2)} € | Repuesto más caro: ${resultado.maximo.nombre} (${resultado.maximo.precio.toFixed(2)} €)`;
+}
 
 
 
@@ -436,28 +454,45 @@ function crearTarjetaRepuesto(repuesto) {
     return tarjeta;
 }
 
-
 // Función para mostrar los repuestos.
 function mostrarRepuestos(lista) {
 
     // Vaciamos el contenedor de tarjetas.
     listado.replaceChildren();
 
-    // Recorremos todos los repuestos.
-    for (const repuesto of lista) {
+    // Comprobamos si la lista está vacía.
+    if (lista.length === 0) {
 
-        // Creamos una tarjeta para cada repuesto.
-        const tarjeta = crearTarjetaRepuesto(repuesto);
+        // Creamos un párrafo con el mensaje.
+        const mensaje = document.createElement("p");
+        mensaje.textContent = "No hay repuestos que coincidan con la búsqueda.";
 
-        // Añadimos la tarjeta al listado.
-        listado.append(tarjeta);
+        // Añadimos el mensaje al listado.
+        listado.append(mensaje);
+
+    } else {
+
+        // Recorremos todos los repuestos.
+        for (const repuesto of lista) {
+
+            // Creamos una tarjeta para cada repuesto.
+            const tarjeta = crearTarjetaRepuesto(repuesto);
+
+            // Añadimos la tarjeta al listado.
+            listado.append(tarjeta);
+        }
     }
 
-    // Mostramos el número total de repuestos.
-    document.querySelector("#resumen").textContent =
-        "Total de repuestos: " + lista.length;
+    // Actualizamos las estadísticas.
+    pintarEstadisticas(lista);
 }
-// RETO 2. BUSCADOR Y ORDENACIÓN
+
+
+
+// ==========================================
+// SPRINT 1 - SESIÓN 11
+// RETO 2: BUSCADOR Y ORDENACIÓN
+// ==========================================
 
 let textoBuscado = "";
 let criterioOrdenacion = "ninguno";
@@ -533,7 +568,7 @@ function pintarResumen(mostrados) {
     if (mostrados > 0) {
         resumen.textContent = `Mostrando ${mostrados} de ${repuestos.length} repuestos`;
     } else {
-        resumen.textContent = "No hay repuestos que coincidan con la búsqueda";
+        resumen.textContent = `No hay repuestos que contengan "${textoBuscado}".`;
     }
 }
 
@@ -558,8 +593,6 @@ function leerCookie(nombre) {
 
     return null;
 }
-
-
 
 // A3. Recuperamos el último orden guardado.
 criterioOrdenacion = leerCookie("orden") || "ninguno";

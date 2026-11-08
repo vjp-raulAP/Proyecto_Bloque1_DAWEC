@@ -1,38 +1,288 @@
-body {
-    font-family: sans-serif;
-    margin: 0 2rem;
-    background:#1a3a80;
-    color: #f9fafb;
-    
+* {
+    box-sizing: border-box;
 }
+
+body {
+    font-family: Arial, sans-serif;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 20px;
+    background: #f1f5f9;
+    color: #1e293b;
+}
+
+header {
+    background: #1e3a5f;
+    color: white;
+    padding: 25px;
+    border-radius: 12px;
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+header h1 {
+    margin-top: 0;
+}
+
+header p {
+    color: #dbeafe;
+}
+
+#resumen {
+    background: #dbeafe;
+    color: #1e40af;
+    padding: 10px;
+    border-radius: 8px;
+    font-weight: bold;
+}
+
+#estadisticas {
+    color: white;
+}
+
+.controles {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 25px;
+}
+
+input {
+    padding: 10px;
+    border: 1px solid #cbd5e1;
+    border-radius: 7px;
+    font-size: 14px;
+}
+
+#buscador {
+    flex: 1;
+    min-width: 180px;
+}
+
+button {
+    padding: 10px 15px;
+    background: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 7px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.2s;
+}
+
+button:hover {
+    background: #1d4ed8;
+}
+
+h2 {
+    color: #1e3a5f;
+    margin-top: 0;
+}
+
+hr {
+    border: none;
+    border-top: 1px solid #cbd5e1;
+    margin: 25px 0;
+}
+
+/* Formulario */
+
+#formularioRepuesto {
+    max-width: 850px;
+    margin: 0 auto 25px;
+    padding: 20px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+}
+
+#formularioRepuesto h2 {
+    margin-bottom: 18px;
+}
+
+#formulario {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px 15px;
+    align-items: center;
+}
+
+#formulario label {
+    font-weight: bold;
+    font-size: 14px;
+}
+
+#formulario input {
+    width: 100%;
+    min-width: 0;
+    padding: 9px;
+    font-size: 14px;
+}
+
+#formulario label:nth-of-type(1) {
+    grid-column: 1;
+    grid-row: 1;
+}
+
+#nuevoNombre {
+    grid-column: 1;
+    grid-row: 2;
+}
+
+#errorNombre {
+    grid-column: 1;
+    grid-row: 3;
+    color: #dc2626;
+    font-size: 13px;
+}
+
+#errorNombre:empty {
+    display: none;
+}
+
+#formulario label:nth-of-type(2) {
+    grid-column: 2;
+    grid-row: 1;
+}
+
+#nuevaCategoria {
+    grid-column: 2;
+    grid-row: 2;
+}
+
+#formulario label:nth-of-type(3) {
+    grid-column: 1;
+    grid-row: 4;
+}
+
+#nuevaMarca {
+    grid-column: 1;
+    grid-row: 5;
+}
+
+#formulario label:nth-of-type(4) {
+    grid-column: 2;
+    grid-row: 4;
+}
+
+#nuevoModelo {
+    grid-column: 2;
+    grid-row: 5;
+}
+
+#formulario label:nth-of-type(5) {
+    grid-column: 1;
+    grid-row: 6;
+}
+
+#nuevoPrecio {
+    grid-column: 1;
+    grid-row: 7;
+}
+
+#formulario label:nth-of-type(6) {
+    grid-column: 2;
+    grid-row: 6;
+}
+
+#nuevaFecha {
+    grid-column: 2;
+    grid-row: 7;
+}
+
+#formulario button {
+    grid-column: 1 / -1;
+    grid-row: 8;
+    justify-self: start;
+    margin-top: 8px;
+}
+
+/* Listado de repuestos */
 
 #listado {
     display: grid;
-    gap: 1rem;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: 18px;
 }
 
 .tarjeta {
-    background: rgb(138, 137, 137);
-    padding: 1rem;
-    border-radius: 8px;
-   
-    box-shadow: 0 4px 10px rgba(59, 59, 59, 0.2);
-     /* Transición suave */
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+    border: 1px solid #e2e8f0;
+    transition: transform 0.2s, box-shadow 0.2s;
 }
+
 .tarjeta:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.15);
+    transform: translateY(-5px);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
 }
+
+.tarjeta h3 {
+    color: #1e40af;
+    margin-top: 0;
+}
+
+.tarjeta hr {
+    margin: 12px 0;
+    border-top: 2px solid #dbeafe;
+}
+
+.tarjeta p {
+    line-height: 1.6;
+    white-space: pre-line;
+}
+
+.tarjeta p:nth-of-type(2) {
+    color: #15803d;
+    font-weight: bold;
+    font-size: 18px;
+}
+
 .reciente {
-    border-left: 6px solid #f26b3a;
+    border-left: 6px solid #f59e0b;
 }
 
 .fecha {
-    color: #cecfd1;
-    font-size: .9rem;
+    color: #64748b;
+    font-size: 13px;
 }
-.tarjeta p {
-    white-space: pre-line;
+
+/* Diseño para móviles */
+
+@media (max-width: 600px) {
+
+    body {
+        padding: 12px;
+    }
+
+    .controles {
+        flex-direction: column;
+    }
+
+    .controles button {
+        width: 100%;
+    }
+
+    #formularioRepuesto {
+        padding: 15px;
+    }
+
+    #formulario {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+
+    #formulario label,
+    #formulario input,
+    #formulario button,
+    #errorNombre {
+        grid-column: 1;
+        grid-row: auto;
+    }
+
+    #listado {
+        grid-template-columns: 1fr;
+    }
 }
