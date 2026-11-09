@@ -454,6 +454,8 @@ function crearTarjetaRepuesto(repuesto) {
     return tarjeta;
 }
 
+
+
 // Función para mostrar los repuestos.
 function mostrarRepuestos(lista) {
 
@@ -596,9 +598,6 @@ function leerCookie(nombre) {
 
 // A3. Recuperamos el último orden guardado.
 criterioOrdenacion = leerCookie("orden") || "ninguno";
-
-// Actualizamos el listado.
-
 
 
 
